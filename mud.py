@@ -1,4 +1,5 @@
 from entities import Entity, Components, World
+from systems import PlayerSystem
 
 def defineEntityTown(entity: Entity):
     entity.addComponent(Components.Descriptor)
@@ -55,10 +56,10 @@ def defineWorldCalU(world: World):
     eberly.addComponent(Components.Place)
     eberly.getComponent(Components.Place).temp = 60
     # container data (entities inside eberly)
-    campus.addComponent(Components.Container)
+    eberly.addComponent(Components.Container)
     # add goblin and sword IDs to eberly entity container
-    campus.getComponent(Components.Container).contents.append(goblin.ID)
-    campus.getComponent(Components.Container).contents.append(sword.ID)
+    eberly.getComponent(Components.Container).contents.append(goblin.ID)
+    eberly.getComponent(Components.Container).contents.append(sword.ID)
 
     # player definition
     # description
@@ -73,6 +74,9 @@ def defineWorldCalU(world: World):
     player.getComponent(Components.Alive).health = 100
     # container (player inventory)
     player.addComponent(Components.Container)
+    # physical (where is the entity in the world)
+    player.addComponent(Components.Physical)
+    player.getComponent(Components.Physical).locationID = campus.ID
 
     # goblin definition
     # description
@@ -109,7 +113,10 @@ def main():
         print()
         e.debugPrintComponents()
 
+    for e in earth.entities:
+        PlayerSystem(earth, e)
 
+    
 
     #print("hello!")
 

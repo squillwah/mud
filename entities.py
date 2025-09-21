@@ -7,6 +7,7 @@ class Components(Enum):
     Container = 3   # data for ents which can contain other ents
     Setpiece = 4    # data for environmental setpieces
     Alive = 5       # data for ents which are alive
+    Physical = 6    # data for entities which are physically in the world
 
 class ComponentDescriptor:
     def __init__(self):
@@ -17,14 +18,12 @@ class ComponentDescriptor:
         print(self.name)
         print(self.desc)
 
-
 class ComponentPlayer:
     def __init__(self):
         self.level: int = 0
 
     def debugPrint(self):
         print(self.level)
-
 
 class ComponentPlace:
     def __init__(self):
@@ -49,11 +48,20 @@ class ComponentSetpiece:
         print(self.text)
 
 class ComponentAlive:
-    def __init(self):
+    def __init__(self):
         self.health: int = 0
     
     def debugPrint(self):
         print(self.health)
+
+class ComponentPhysical:
+    def __init__(self):
+        self.locationID: int = None
+        self.weight: int = 0
+    
+    def debugPrint(self):
+        print(self.locationID)
+        print(self.weight)
 
 class Entity: 
     def __init__(self, ID: int):
@@ -75,6 +83,8 @@ class Entity:
                 component = ComponentSetpiece()
             case Components.Alive:
                 component = ComponentAlive()
+            case Components.Physical:
+                component = ComponentPhysical()
             case _:
                 print(f"Err: Unkown type '{cType}'")
                 return
