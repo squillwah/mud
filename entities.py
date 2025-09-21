@@ -2,28 +2,28 @@ from enum import Enum
 
 class Components(Enum):
     Descriptor = 0  # data for ents with names/descriptions
-    Player = 1      # data for ents which are plays
+    Player = 1      # data for ents which are players
     Place = 2       # data for ents which are places
     Container = 3   # data for ents which can contain other ents
+    Setpiece = 4    # data for environmental setpieces
+    Alive = 5       # data for ents which are alive
 
 class ComponentDescriptor:
     def __init__(self):
-        self.name: str = "blank"
-        self.desc: str = "blank"
+        self.name: str = "blank descriptor"
+        self.desc: str = "blank descriptor"
 
     def debugPrint(self):
-        print("DEBUG: descriptor")
         print(self.name)
         print(self.desc)
 
 
 class ComponentPlayer:
     def __init__(self):
-        self.health: int = 0
+        self.level: int = 0
 
     def debugPrint(self):
-        print("DEBUG: player")
-        print(self.health)
+        print(self.level)
 
 
 class ComponentPlace:
@@ -31,7 +31,6 @@ class ComponentPlace:
         self.temperature: int = 0
 
     def debugPrint(self):
-        print("DEBUG: place")
         print(self.temperature)
 
 
@@ -40,8 +39,21 @@ class ComponentContainer:
         self.contents: list[int] = []
 
     def debugPrint(self):
-        print("DEBUG: container")
         print(self.contents)
+
+class ComponentSetpiece:
+    def __init__(self):
+        self.text: str = "blank setpiece"
+    
+    def debugPrint(self):
+        print(self.text)
+
+class ComponentAlive:
+    def __init(self):
+        self.health: int = 0
+    
+    def debugPrint(self):
+        print(self.health)
 
 class Entity: 
     def __init__(self, ID: int):
@@ -59,6 +71,10 @@ class Entity:
                 component = ComponentPlace()
             case Components.Container:
                 component = ComponentContainer()
+            case Components.Setpiece:
+                component = ComponentSetpiece()
+            case Components.Alive:
+                component = ComponentAlive()
             case _:
                 print(f"Err: Unkown type '{cType}'")
                 return
@@ -71,15 +87,15 @@ class Entity:
         self.components[cType.value] = None
 
     def debugPrintComponents(self):
+        print(f"ID: {self.ID}")
         for cType in Components:
             print(cType)
             c = self.getComponent(cType)
 
-            print(c)
             if c != None:
                 c.debugPrint()
-            
-            print()
+            else:
+                print(c)
 
 class World: 
     def __init__(self):

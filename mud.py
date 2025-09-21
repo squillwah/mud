@@ -65,9 +65,12 @@ def defineWorldCalU(world: World):
     player.addComponent(Components.Descriptor)
     player.getComponent(Components.Descriptor).name = "The Player"
     player.getComponent(Components.Descriptor).desc = "You."
-    # player data (health)
+    # player data (level)
     player.addComponent(Components.Player)
-    player.getComponent(Components.Player).health = 100
+    player.getComponent(Components.Player).level = 2
+    # living creature data (health)
+    player.addComponent(Components.Alive)
+    player.getComponent(Components.Alive).health = 100
     # container (player inventory)
     player.addComponent(Components.Container)
 
@@ -76,6 +79,9 @@ def defineWorldCalU(world: World):
     goblin.addComponent(Components.Descriptor)
     goblin.getComponent(Components.Descriptor).name = "A Goblin"
     goblin.getComponent(Components.Descriptor).desc = "Goblin Trouble"
+    # living creature data (health)
+    goblin.addComponent(Components.Alive)
+    goblin.getComponent(Components.Alive).health = 50
 
     # sword definition
     # description
@@ -100,6 +106,7 @@ def main():
     defineWorldCalU(earth)
 
     for e in earth.entities:
+        print()
         e.debugPrintComponents()
 
 
