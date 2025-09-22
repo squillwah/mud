@@ -10,8 +10,15 @@ class Components(Enum):
     Alive = 5       # data for ents which are alive
     Physical = 6    # data for entities which are physically in the world
 
+class Entity:
+    pass
+
 @dataclass
-class ComponentDescriptor:
+class Component:
+    owner: Entity
+
+@dataclass
+class ComponentDescriptor(Component):
     name: str 
     desc: str 
 
@@ -20,42 +27,46 @@ class ComponentDescriptor:
         print(self.desc)
 
 @dataclass
-class ComponentPlayer:
+class ComponentPlayer(Component):
     level: int
 
     def debugPrint(self):
         print(self.level)
 
 @dataclass
-class ComponentPlace:
+class ComponentPlace(Component):
     temperature: int
+
+    # components shouldn't define functionality
+    def generateDescription(self) -> str:
+        self.owner.get(Components.Container).contents
 
     def debugPrint(self):
         print(self.temperature)
 
 @dataclass
-class ComponentContainer:
+class ComponentContainer(Component):
     contents: list[int]
 
     def debugPrint(self):
         print(self.contents)
 
 @dataclass
-class ComponentSetpiece:
+class ComponentSetpiece(Component):
     text: str
     
     def debugPrint(self):
         print(self.text)
 
 @dataclass
-class ComponentAlive:
+class ComponentAlive(Component):
     health: int
     
     def debugPrint(self):
         print(self.health)
 
 @dataclass
-class ComponentPhysical:
+class ComponentPhysical(Component):
     locationID: int
     weight: int
     
@@ -72,19 +83,19 @@ class Entity:
         component = None
         match cType:
             case Components.Descriptor:
-                component = ComponentDescriptor(**cData) #** notation unpacks dict into named args
+                component = ComponentDescriptor(owner=self, **cData) #** notation unpacks dict into named args
             case Components.Player:
-                component = ComponentPlayer(**cData)
+                component = ComponentPlayer(owner=self, **cData)
             case Components.Place:
-                component = ComponentPlace(**cData)
+                component = ComponentPlace(owner=self, **cData)
             case Components.Container:
-                component = ComponentContainer(**cData)
+                component = ComponentContainer(owner=self, **cData)
             case Components.Setpiece:
-                component = ComponentSetpiece(**cData)
+                component = ComponentSetpiece(owner=self, **cData)
             case Components.Alive:
-                component = ComponentAlive(**cData)
+                component = ComponentAlive(owner=self, **cData)
             case Components.Physical:
-                component = ComponentPhysical(**cData)
+                component = ComponentPhysical(owner=self, **cData)
             case _:
                 print(f"Err: Unkown type '{cType}'")
                 return
@@ -109,7 +120,8 @@ class Entity:
 
 class Entities:
     def __init__(self):
-        self.entityList: list[Entity] = []
+        self.IDs: list[int] = []
+        self._entityList: list[Entity] = []
         self._freeIDs: list[int] = []
 
     def create(self) -> int:
@@ -120,6 +132,7 @@ class Entities:
         else:
             entity = Entity(len(self.entityList))
             self.entityList.append(entity)
+        self.IDs.append(entity.ID)
         return entity.ID
 
     def destroy(self, ID: int):
@@ -128,6 +141,7 @@ class Entities:
         else:
             self.entityList[ID] = None
             self._freeIDs.append(ID)
+        self.IDs.remove(entity.ID)
 
     def get(self, ID: int):
         return self.entityList[ID]

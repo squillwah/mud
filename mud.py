@@ -87,6 +87,12 @@ def defineWorldCalU(world: Entities):
               {"locationID":campus.ID,
                "weight":10})
 
+    tree = world.create()
+    world.get(tree).add(C.Setpiece, 
+                       {"text":"A tree blows in the wind"})
+    campus.get(C.Container).contents.append(tree)
+
+
 def main():
 
     # create group of entities
