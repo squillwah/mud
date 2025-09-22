@@ -1,6 +1,6 @@
 from entities import Entities, Entity#, World
 from entities import Components as C
-from systems import Systems
+from systems import PlayerSystem
 
 #def defineEntityTown(entity: Entity):
 #    entity.addComponent(Components.Descriptor)
@@ -44,7 +44,7 @@ def defineWorldCalU(world: Entities):
                {"temperature":70})
     # container data (entities on campus)
     campus.add(C.Container, 
-               {"contents":[eberly.ID, player.ID]})
+               {"contents":[eberly.ID, player.ID, sword.ID]})
 
     # eberly definition
     # description
@@ -56,7 +56,7 @@ def defineWorldCalU(world: Entities):
                {"temperature":60})
     # container data (entities inside eberly)
     eberly.add(C.Container,
-               {"contents":[goblin.ID, sword.ID]})
+               {"contents":[goblin.ID]})
 
     # player definition
     # description
@@ -95,7 +95,7 @@ def defineWorldCalU(world: Entities):
               {"name":"Diamond Sword",
                "desc":"Do you like it?"})
     sword.add(C.Physical,
-              {"locationID":eberly.ID,
+              {"locationID":campus.ID,
                "weight":10})
 
 def main():
@@ -110,8 +110,6 @@ def main():
 
     # create group of entities
     ents = Entities()
-    # create systems to operate on entities
-    systs = Systems(ents)
 
     #earth = World()
     defineWorldCalU(ents)
@@ -120,8 +118,10 @@ def main():
         print()
         e.debugPrintComponents()
 
-    for e in ents.entityList:
-        systs.player(e)
+    PlayerSystem(ents)
+
+   # for e in ents.entityList:
+   #     systs.player(e)
         #PlayerSystem(earth, e)
 
     
