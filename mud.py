@@ -100,9 +100,10 @@ def main():
     
     defineWorldCalU(ents)
 
-    for e in ents.entityList: # iterating like this could cause issues when ents are deleted
+    #for e in ents.entityList: # iterating like this could cause issues when ents are deleted
+    for ID in ents.IDs:
         print()
-        e.debugPrintComponents()
+        ents.get(ID).debugPrintComponents()
 
     PlayerSystem(ents)
 

@@ -128,22 +128,22 @@ class Entities:
         entity: Entity 
         if self._freeIDs:
             entity = Entity(self._freeIDs.popleft())
-            self.entityList[entity.ID] = entity
+            self._entityList[entity.ID] = entity
         else:
-            entity = Entity(len(self.entityList))
-            self.entityList.append(entity)
+            entity = Entity(len(self._entityList))
+            self._entityList.append(entity)
         self.IDs.append(entity.ID)
         return entity.ID
 
     def destroy(self, ID: int):
-        if ID == len(self.entityList)-1:
-            self.entityList.pop()
+        if ID == len(self._entityList)-1:
+            self._entityList.pop()
         else:
-            self.entityList[ID] = None
+            self._entityList[ID] = None
             self._freeIDs.append(ID)
         self.IDs.remove(entity.ID)
 
     def get(self, ID: int):
-        return self.entityList[ID]
+        return self._entityList[ID]
 
 

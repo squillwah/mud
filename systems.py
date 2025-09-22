@@ -6,8 +6,7 @@ class Actions(Enum):
     LOOKAROUND = 0  # the player observes their surroundings
     FOCUS = 1       # the player focuses on an entity 
 
-#should use id instead of passing entity itself
-def generatePlaceDescription(entities: Entities, placeID: int, excludeIDs: tuple = ()) -> str:
+def generatePlaceDescription(entities: Entities, placeID: int, excludeIDs: list = []) -> str:
     output: str = ""
     output += "| ---\n"
     output += f"| You are in {entities.get(placeID).get(C.Descriptor).name}.\n"
@@ -42,19 +41,19 @@ def generatePlaceDescription(entities: Entities, placeID: int, excludeIDs: tuple
 
 
 def PlayerSystem(entities: Entities):
-    for player in entities.entityList:  #iterating like this could cause issues if hit None, should use a list of ids to stick with design pattern
-        if not player.has(C.Player):
+    for player in entities.IDs:  
+        if not entities.get(player).has(C.Player):
             continue
         
-        print(f"Hello, {player.get(C.Descriptor).name}.")
+        print(f"Hello, {entities.get(player).get(C.Descriptor).name}.")
         print("LOOKAROUND | FOCUS 'entity' | ENTER 'entity' | PICKUP 'entity'")
         action: str = input("Take Action: ")
     
         match action:
             case "LOOKAROUND":
-                localID = player.get(C.Physical).locationID
+                local = entities.get(player).get(C.Physical).locationID
                 
-                print(generatePlaceDescription(entities, localID))
+                print(generatePlaceDescription(entities, local, [player]))
                 #local = entities.get(player.get(C.Physical).locationID)
                 #for ID in local.get(C.Container).contents:
                 #    if ID == player.ID:
