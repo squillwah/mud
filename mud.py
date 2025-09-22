@@ -1,17 +1,6 @@
-from entities import Entities, Entity#, World
+from entities import Entities, Entity
 from entities import Components as C
 from systems import PlayerSystem
-
-#def defineEntityTown(entity: Entity):
-#    entity.addComponent(Components.Descriptor)
-#    entity.getComponent(Components.Descriptor).name = "Default Town"
-#    entity.getComponent(Components.Descriptor).desc = "Description of Default Town"
-#
-#    entity.addComponent(Components.Place)
-#    entity.getComponent(Components.Place).temperature = 69
-#
-#    entity.addComponent(Components.Container)
-
 
 # Procedure to create and tie together some entities for a game world
 # Ideally this would be done through a json file or something
@@ -100,50 +89,16 @@ def defineWorldCalU(world: Entities):
 
 def main():
 
-
-#    townID = earth.createEntity()
-#    myEntity = earth.getEntity(townID)
-#
-#    defineEntityTown(myEntity)
-#
-#    earth.getEntity(0).debugPrintComponents()
-
     # create group of entities
     ents = Entities()
-
-    #earth = World()
+    
     defineWorldCalU(ents)
 
-    for e in ents.entityList:
+    for e in ents.entityList: # iterating like this could cause issues when ents are deleted
         print()
         e.debugPrintComponents()
 
     PlayerSystem(ents)
-
-   # for e in ents.entityList:
-   #     systs.player(e)
-        #PlayerSystem(earth, e)
-
-    
-
-    #print("hello!")
-
-    #player = Entity(0)
-    #print(player)
-    #player.addComponent(Components.Descriptor)
-    #player.addComponent(Components.Player)
-    #player.addComponent(Components.Place)
-    #player.addComponent(Components.Container)
-    #
-    #player.getComponent(Components.Descriptor).name = "Fred"
-    #player.getComponent(Components.Descriptor).desc = "A player named fred"
-
-    #player.components[Components.Descriptor.value].debugPrint()
-
-    #for c in player.components:
-    #    print(c)
-    #    c.debugPrint()
-
 
 if __name__ == "__main__":
     main()

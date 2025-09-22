@@ -132,36 +132,4 @@ class Entities:
     def get(self, ID: int):
         return self.entityList[ID]
 
-#class World: 
-#    def __init__(self):
-#        # list of every entity in world
-#        self.entities: list[Entity] = []
-#        # list of all freed entity IDs (self.entities indexes)
-#        self.freeIDs: list[int] = []
-#
-#    # returns ID of entity created
-#    def createEntity(self):
-#        ent: Entity
-#        if len(self.freeIDs) > 0:
-#            # create entity with earliest freed ID
-#            ent = Entity(self.freeIDs.popleft())
-#            self.entities[ent.ID] = ent
-#        else:
-#            # expand entity list if no IDs are free
-#            ent = Entity(len(self.entities))
-#            self.entities.append(ent)
-#        return ent.ID
-#
-#    def getEntity(self, entityID: int):
-#        return self.entities[entityID]
-#
-#    def destroyEntity(self, entityID: int):
-#        # shorten entity list if at end
-#        if entityID == len(self.entities)-1:
-#            self.entities.pop()
-#        # otherwise nullify entity and add ID to freeID queue
-#        else:
-#            self.entities[entityID] = None
-#            self.freeIDs.append(entityID)
-
 
