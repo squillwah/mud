@@ -3,10 +3,12 @@ from entities import Components as C
 from enum import Enum
 
 class Actions(Enum):
-    LOOKAROUND = 0  # the player observes their surroundings
-    FOCUS = 1       # the player focuses on an entity 
+    Observe = "observe" # the player observes their surroundings
+    Focus = "focus"     # the player focuses on an entity 
+    Enter = "enter"     # the player enters an entity
+    Take = "take"       # the player takes an entity
 
-def generatePlaceDescription(entities: Entities, placeID: int, excludeIDs: list = []) -> str:
+def generatePlaceDescription(entities: Entities, placeID: int, excludeIDs: tuple = ()) -> str:
     output: str = ""
     output += "| ---\n"
     output += f"| You are in {entities.get(placeID).get(C.Descriptor).name}.\n"
@@ -39,29 +41,53 @@ def generatePlaceDescription(entities: Entities, placeID: int, excludeIDs: list 
     return output
 
 
-
-def PlayerSystem(entities: Entities):
-    for player in entities.IDs:  
-        if not entities.get(player).has(C.Player):
+# Process input commands, add actions to player action queue
+def InputSystem(entities: Entities):
+    for ID in entities.IDs:
+        if not entities.get(ID).has(C.Player):
             continue
-        
-        print(f"Hello, {entities.get(player).get(C.Descriptor).name}.")
-        print("LOOKAROUND | FOCUS 'entity' | ENTER 'entity' | PICKUP 'entity'")
+
+        player = entities.get(ID)
+        print(f"Hello, {player.get(C.Descriptor).name}.")
+        print("OBSERVE | FOCUS 'entity' | ENTER 'entity' | PICKUP 'entity'")
         action: str = input("Take Action: ")
-    
-        match action:
-            case "LOOKAROUND":
-                local = entities.get(player).get(C.Physical).locationID
-                
-                print(generatePlaceDescription(entities, local, [player]))
-                #local = entities.get(player.get(C.Physical).locationID)
-                #for ID in local.get(C.Container).contents:
-                #    if ID == player.ID:
-                #        continue
-                #    if entities.get(ID).has(C.Setpiece):
-                #        print(entities.get(ID).get(C.Setpiece).text)
-                #    elif entities.get(ID).has(C.Descriptor):
-                #        print(f" > {entities.get(ID).get(C.Descriptor).name}")
+
+        command = action.lower().split()
+        match command[0]:
+            case Actions.Observe.value:
+                player.get(C.Player).actionQueue.append((Actions.Observe,))
+            case Actions.Focus.value:
+                player.get(C.Player).actionQueue.append((Actions.Focus, ID))
             case _:
                 pass
+
+# Process player action queues
+def PlayerSystem(entities: Entities):
+    for ID in entities.IDs:  
+        if not entities.get(ID).has(C.Player):
+            continue
+
+        player = entities.get(ID)
+        if not player.get(C.Player).actionQueue:
+            continue
+
+        action = player.get(C.Player).actionQueue.pop(0)
+
+        match action[0]:
+            case Actions.Observe:
+                local = player.get(C.Physical).locationID
+                print(generatePlaceDescription(entities, local, (player.ID,)))
+            case Actions.Focus:
+                focus = entities.get(action[1])
+                print("| ---")
+                print(f"| {focus.get(C.Descriptor).name}")
+                print(f"|  {focus.get(C.Descriptor).desc}")
+                print("| ---")
+    
+#        match action:
+#            case "LOOKAROUND":
+#                local = entities.get(player).get(C.Physical).locationID
+#                print(generatePlaceDescription(entities, local, [player]))
+#            case _:
+#                pass
 

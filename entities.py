@@ -29,6 +29,7 @@ class ComponentDescriptor(Component):
 @dataclass
 class ComponentPlayer(Component):
     level: int
+    actionQueue: list[tuple]
 
     def debugPrint(self):
         print(self.level)
@@ -36,10 +37,6 @@ class ComponentPlayer(Component):
 @dataclass
 class ComponentPlace(Component):
     temperature: int
-
-    # components shouldn't define functionality
-    def generateDescription(self) -> str:
-        self.owner.get(Components.Container).contents
 
     def debugPrint(self):
         print(self.temperature)
@@ -127,7 +124,7 @@ class Entities:
     def create(self) -> int:
         entity: Entity 
         if self._freeIDs:
-            entity = Entity(self._freeIDs.popleft())
+            entity = Entity(self._freeIDs.pop(0))
             self._entityList[entity.ID] = entity
         else:
             entity = Entity(len(self._entityList))

@@ -1,6 +1,6 @@
 from entities import Entities, Entity
 from entities import Components as C
-from systems import PlayerSystem
+from systems import InputSystem, PlayerSystem
 
 # Procedure to create and tie together some entities for a game world
 # Ideally this would be done through a json file or something
@@ -54,7 +54,8 @@ def defineWorldCalU(world: Entities):
                 "desc":"You"})
     # player data (level)
     player.add(C.Player,
-               {"level":2})
+               {"level":2, 
+                "actionQueue":[]})
     # living creature data (health)
     player.add(C.Alive, 
                {"health":100})
@@ -101,11 +102,13 @@ def main():
     defineWorldCalU(ents)
 
     #for e in ents.entityList: # iterating like this could cause issues when ents are deleted
-    for ID in ents.IDs:
-        print()
-        ents.get(ID).debugPrintComponents()
+    #for ID in ents.IDs:
+    #    print()
+    #    ents.get(ID).debugPrintComponents()
 
-    PlayerSystem(ents)
+    while(True):
+        InputSystem(ents)
+        PlayerSystem(ents)
 
 if __name__ == "__main__":
     main()
