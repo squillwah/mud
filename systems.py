@@ -1,62 +1,40 @@
 from entities import Entity, Entities
 from entities import Components as C
-from enum import Enum
+from actions import Action, Actions, actionObserve
 
-class Actions(Enum):
-    Observe = "observe" # the player observes their surroundings
-    Focus = "focus"     # the player focuses on an entity 
-    Enter = "enter"     # the player enters an entity
-    Take = "take"       # the player takes an entity
-
-def generatePlaceDescription(entities: Entities, placeID: int, excludeIDs: tuple = ()) -> str:
-    output: str = ""
-    output += "| ---\n"
-    output += f"| You are in {entities.get(placeID).get(C.Descriptor).name}.\n"
-    output += f"| {entities.get(placeID).get(C.Descriptor).desc}\n"
-    output += "| \n"
-
-    setpieces: list[str] = []
-    otherEnts: list[str] = [] # add more detailed distinctions later
-
-    for ID in entities.get(placeID).get(C.Container).contents:
-        if ID in excludeIDs: continue
-        if entities.get(ID).has(C.Setpiece):
-            setpieces.append(entities.get(ID).get(C.Setpiece).text)
+# Helper func to pick entity IDs out of list by their descriptor names
+def findByDescriptorName(entities: Entities, IDList: int, name: str) -> int:
+    foundID = -1
+    for ID in IDList: 
         if entities.get(ID).has(C.Descriptor):
-            otherEnts.append(entities.get(ID).get(C.Descriptor).name)
-
-    for text in setpieces:
-        output += f"| {text}\n"
-    output += "| \n"
-
-    output += "| Looking around, you see: \n"
-    if otherEnts:
-        for name in otherEnts:
-            output += f"|  > {name}\n"
-    else:
-        output += "| ...\n"
-
-    output += "| ---\n"
-
-    return output
-
+            if entities.get(ID).get(C.Descriptor).name == name:
+                foundID = ID
+                break;
+    return foundID
 
 # Process input commands, add actions to player action queue
 def InputSystem(entities: Entities):
     for ID in entities.IDs:
-        if not entities.get(ID).has(C.Player):
-            continue
+        # skip if not a player entity
+        if not entities.get(ID).has(C.Player): continue
 
+        # input with prompt
         player = entities.get(ID)
         print(f"Hello, {player.get(C.Descriptor).name}.")
         print("OBSERVE | FOCUS 'entity' | ENTER 'entity' | PICKUP 'entity'")
         action: str = input("Take Action: ")
 
+        # divide input string into words
         command = action.lower().split()
+        if not command: continue # if no words, skip
+        #if len(command) > 1:
+
+        # match first word to known actions
         match command[0]:
             case Actions.Observe.value:
+                if len(command) != 1: continue # skip if bad # operands for action
                 player.get(C.Player).actionQueue.append((Actions.Observe,))
-            case Actions.Focus.value:
+            case Actions.Inspect.value:
                 player.get(C.Player).actionQueue.append((Actions.Focus, ID))
             case _:
                 pass
@@ -76,7 +54,8 @@ def PlayerSystem(entities: Entities):
         match action[0]:
             case Actions.Observe:
                 local = player.get(C.Physical).locationID
-                print(generatePlaceDescription(entities, local, (player.ID,)))
+                actionObserve(entities, local, (player.ID,)) #placeholder, should be done through execute in Actions
+                #print(generatePlaceDescription(entities, local, (player.ID,)))
             case Actions.Focus:
                 focus = entities.get(action[1])
                 print("| ---")
