@@ -26,17 +26,20 @@ from engine.entitybase import EntityReference   # To access entity of components
 # Constant for every component type
 class ComponentTypes(Enum):
     Location    = 0
-    Inventory   = 1
-    Alive       = 2
-    Physcial    = 3
-    Player      = 4
-COMPONENT_COUNT = 5
+    Descriptor  = 1
+    Inventory   = 2
+    Alive       = 3
+    Physical    = 4
+    Player      = 5
+COMPONENT_COUNT = 6
 
 # Get an instance of a component type initialzed to 'init'
 def component(c: ComponentTypes, init: dict):
     match c:
         case ComponentTypes.Location:
             return CLocation(**init)
+        case ComponentTypes.Descriptor:
+            return CDescriptor(**init)
         case ComponentTypes.Inventory:
             return CInventory(**init)
         case ComponentTypes.Alive:
@@ -66,7 +69,7 @@ def hasComponent(e: EntityReference, c: ComponentTypes):
     has = False
     if not e.valid: print("Err: Bad Entity Reference")
     elif not (c in ComponentTypes): print("Err: Bad Component Type")
-    else: has = e.manager._entities[e.ID][c.value] != None
+    else: has = e.container.entityList[e.ID][c.value] != None
     return has
 
 # Access a component of an entity

@@ -4,14 +4,19 @@ from engine.systems.commands import CommandCode    # For the player component, w
 # --------------------
 # CLocation:
 #  = Component for entities representing locations
-#  - linedLocations: 
+#  - linedLocations 
 #     + Dictionary of linked locations
 #     + Key is "where" that location is relatively ("North", "South", "Over Yonder")
 #     + Value is an EntityReference to the location entity
 # --------------------
+# CDescriptor:
+#  = Component for entities with name + description data
+#  - name
+#  - description
+# --------------------
 # CInventory:
 #  = Component for entities with inventories
-#  - contents:
+#  - contents
 #     + List of EntityReferences to entities inside the inventory
 # --------------------
 # CAlive:
@@ -24,13 +29,18 @@ from engine.systems.commands import CommandCode    # For the player component, w
 # --------------------
 # CPlayer:
 #  = Component for unique player data
-#  - commandQueue:
+#  - commandQueue
 #     + List of player CommandCodes to be processed
 # --------------------
 
 @dataclass
 class CLocation:
     linkedLocations: dict[str, EntityReference]
+
+@dataclass
+class CDescriptor:
+    name: str
+    description: str
 
 @dataclass
 class CInventory:
